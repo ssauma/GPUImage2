@@ -16,12 +16,18 @@ public class RenderView:NSOpenGLView, ImageConsumer {
     }()
 
     // TODO: Need to set viewport to appropriate size, resize viewport on view reshape
+    var renderSize: NSSize = .zero
+    override public var frame: NSRect {
+        didSet {
+            renderSize = frame.size
+        }
+    }
     
     public func newFramebufferAvailable(_ framebuffer:Framebuffer, fromSourceIndex:UInt) {
         glBindFramebuffer(GLenum(GL_FRAMEBUFFER), 0)
         glBindRenderbuffer(GLenum(GL_RENDERBUFFER), 0)
 
-        let viewSize = GLSize(width:GLint(round(self.bounds.size.width)), height:GLint(round(self.bounds.size.height)))
+        let viewSize = GLSize(width:GLint(round(self.renderSize.width)), height:GLint(round(self.renderSize.height)))
         glViewport(0, 0, viewSize.width, viewSize.height)
 
         clearFramebufferWithColor(backgroundColor)
